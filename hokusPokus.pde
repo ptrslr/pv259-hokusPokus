@@ -1,3 +1,9 @@
+// Hokus Pokus
+// Experimental school project
+
+// author: Peter Solař
+// inspiration: http://codedoodl.es/_/neilcarpenter/ascii-trail
+
 import processing.pdf.*;
 
 int cols = 0, rows = 0, cellSize = 0, gridLength = 0;
@@ -10,6 +16,7 @@ PFont font;
 
 void setup() {
     size(640, 640, P2D);
+
     colorMode(HSB);
     background(10);
 
@@ -21,9 +28,11 @@ void setup() {
     grid = gridInit();
 }
 
+// GridItem object class
 class GridItem {
     char itemChar = 'a';
     color itemColor = defaultItemColor;
+
 
     GridItem(char itemChar, color itemColor) {
         this.itemChar = itemChar;
@@ -43,8 +52,8 @@ class GridItem {
     }
 
     void darkenColor() {
-        if (itemColor - 10 >= defaultItemColor) {
-            itemColor -= 10;
+        if (itemColor - 5 >= defaultItemColor) {
+            itemColor -= 5;
         }
     }
 
@@ -65,6 +74,7 @@ class GridItem {
     }
 }
 
+// initializes grid
 GridItem[] gridInit() {
     cellSize = 16;
     cols = width / cellSize;
@@ -84,6 +94,7 @@ GridItem[] gridInit() {
     return grid;
 }
 
+// randomizes grid
 GridItem[] randomizeGrid(GridItem[] randomGrid) {
     int randomPos = 0, changes = 100;
     int n = int(random(changes));
@@ -102,18 +113,15 @@ GridItem[] randomizeGrid(GridItem[] randomGrid) {
     return randomGrid;
 }
 
-void draw() {
-    background(10);
-    frameRate(30);
-
+// renders grid
+void renderGrid(GridItem[] randomGrid) {
+    // position coordinates on screen
     int posX = 0;
     int posY = 0;
 
-    grid = randomizeGrid(grid);
-
     for (int i = 0; i < grid.length; ++i) {
         posX = (i % cols) * cellSize;
-        posY = (i / rows) * cellSize;
+        posY = (i / cols) * cellSize;
 
         // println(grid.length, posX, posY);
         fill(grid[i].getColor());
@@ -123,10 +131,24 @@ void draw() {
     }
 }
 
-void mouseMoved() {
-    int gridPos = 0;
+void draw() {
+    background(10);
+    frameRate(60);
 
-    gridPos = (mouseX / cellSize + 1) + (mouseY / cellSize * cols) - 1;
+
+    grid = randomizeGrid(grid);
+    renderGrid(grid);
+}
+
+void mouseMoved() {
+    int gridPos = 0, newGridPos = 0;
+
+
+    newGridPos = (mouseX / cellSize) + (mouseY / cellSize * cols) ;
+
+    if (newGridPos < gridLength) {
+        gridPos = newGridPos;
+    }
 
     grid[gridPos].brightenColor();
 
