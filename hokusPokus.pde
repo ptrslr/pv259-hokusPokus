@@ -2,7 +2,8 @@ import processing.pdf.*;
 
 int cols = 0, rows = 0, cellSize = 0, gridLength = 0;
 
-char[] grid = new char[0];
+// char[] grid = new char[0];
+GridItem[] grid = new GridItem[0];
 
 PFont font;
 
@@ -19,34 +20,53 @@ void setup() {
     grid = gridInit();
 }
 
-class gridItem {
+class GridItem {
     char itemChar = 'a';
     color itemColor = 50;
+
+    GridItem(char itemChar, color itemColor) {
+        this.itemChar = itemChar;
+        this.itemColor = itemColor;
+    }
 
     void randomizeChar() {
         itemChar = char(int(random(32, 127)));
     }
+
+    char getChar() {
+        return itemChar;
+    }
+
+    color getColor() {
+        return itemColor;
+    }
+
+    void setChar(char newChar) {
+        itemChar = newChar;
+    }
+
+    void setColor(color newColor) {
+        itemColor = newColor;
+    }
 }
 
-char[] gridInit() {
+GridItem[] gridInit() {
     cellSize = 16;
     cols = width / cellSize;
     rows = height / cellSize;
     gridLength = cols * rows;
 
     char randomChar = 'a';
-    char[] grid = new char[gridLength];
+    GridItem[] grid = new GridItem[gridLength];
 
     for (int i = 0; i < grid.length; ++i) {
-        randomChar = char(int(random(32, 127)));
-
-        grid[i] = randomChar;
+        grid[i] = new GridItem('a', 50);
     }
 
     return grid;
 }
 
-char[] randomizeGrid(char[] randomGrid) {
+GridItem[] randomizeGrid(GridItem[] randomGrid) {
     int randomPos = 0, changes = 100;
     int n = int(random(changes));
 
@@ -58,7 +78,7 @@ char[] randomizeGrid(char[] randomGrid) {
         randomPos = int(random(randomGrid.length));
 
         // println(randomPos, randomChar);
-        randomGrid[randomPos] = randomChar;
+        randomGrid[randomPos].randomizeChar();
     }
 
     return randomGrid;
@@ -77,7 +97,7 @@ void draw() {
         posY = (i / rows) * cellSize;
 
         // println(grid.length, posX, posY);
-        text(grid[i], posX, posY);
+        text(grid[i].getChar(), posX, posY);
     }
 }
 
