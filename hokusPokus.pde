@@ -8,7 +8,7 @@ import processing.pdf.*;
 
 int cols = 0, rows = 0, cellSize = 0, gridLength = 0, hoverRadius = 0;
 
-int defaultColorH, defaultColorS, defaultColorB;
+float defaultColorH, defaultColorS, defaultColorB;
 color defaultColor, defaultBackground;
 
 // char[] grid = new char[0];
@@ -40,7 +40,7 @@ void setup() {
 class GridItem {
     char itemChar = 'a';
 
-    int itemColorH, itemColorS, itemColorB;
+    float itemColorH, itemColorS, itemColorB;
     color itemColor = defaultColor;
 
 
@@ -48,9 +48,9 @@ class GridItem {
         this.itemChar = itemChar;
         this.itemColor = itemColor;
 
-        itemColorH = int(hue(itemColor));
-        itemColorS = int(saturation(itemColor));
-        itemColorB = int(brightness(itemColor));
+        itemColorH = hue(itemColor);
+        itemColorS = saturation(itemColor);
+        itemColorB = brightness(itemColor);
     }
 
 
@@ -69,8 +69,8 @@ class GridItem {
     }
 
     void darkenColor() {
-        if (itemColorB + 1 <= defaultColorB) {
-            itemColorB += 1;
+        if (itemColorB + defaultColorB / 100 <= defaultColorB) {
+            itemColorB += defaultColorB / 100;
             itemColor = color(itemColorH, itemColorS, itemColorB);
         }
         else {
