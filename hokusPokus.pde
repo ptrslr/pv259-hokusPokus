@@ -7,7 +7,9 @@
 import processing.pdf.*;
 
 int cols = 0, rows = 0, cellSize = 0, gridLength = 0, hoverRadius = 0;
-color defaultItemColor;
+
+int defaultColorH, defaultColorS, defaultColorB;
+color defaultColor, defaultBackground;
 
 // char[] grid = new char[0];
 GridItem[] grid = new GridItem[0];
@@ -15,12 +17,18 @@ GridItem[] grid = new GridItem[0];
 PFont font;
 
 void setup() {
-    size(640, 640, P2D);
+    size(1024, 640, P2D);
 
-    colorMode(HSB);
-    background(10);
+    colorMode(HSB, 360, 100, 100);
 
-    fill(50);
+    defaultColorH = 137;
+    defaultColorS = 57;
+    defaultColorB = 68;
+
+    defaultColor = color(defaultColorH, defaultColorS, defaultColorB);
+    defaultBackground = color(defaultColorH, defaultColorS, defaultColorB);
+
+    fill(defaultColor);
     font = createFont("Inconsolata", 16, true);
     textAlign(LEFT, TOP);
     textFont(font);
@@ -31,12 +39,18 @@ void setup() {
 // GridItem object class
 class GridItem {
     char itemChar = 'a';
-    color itemColor = defaultItemColor;
+
+    int itemColorH, itemColorS, itemColorB;
+    color itemColor = defaultColor;
 
 
     GridItem(char itemChar, color itemColor) {
         this.itemChar = itemChar;
         this.itemColor = itemColor;
+
+        itemColorH = int(hue(itemColor));
+        itemColorS = int(saturation(itemColor));
+        itemColorB = int(brightness(itemColor));
     }
 
 
@@ -45,7 +59,8 @@ class GridItem {
     }
 
     void randomizeColor() {
-        itemColor = int(random(128, 256));
+        itemColorB = int(random(50));
+        itemColor = color(itemColorH, itemColorS, itemColorB);
     }
 
 
@@ -54,11 +69,12 @@ class GridItem {
     }
 
     void darkenColor() {
-        if (itemColor - 5 >= defaultItemColor) {
-            itemColor -= 5;
+        if (itemColorB + 1 <= defaultColorB) {
+            itemColorB += 1;
+            itemColor = color(itemColorH, itemColorS, itemColorB);
         }
         else {
-            itemColor = defaultItemColor;
+            itemColor = defaultColor;
         }
     }
 
@@ -89,14 +105,13 @@ GridItem[] gridInit() {
     gridLength = cols * rows;
 
     hoverRadius = 1;
-    defaultItemColor = 10;
 
     char randomChar = 'a';
     GridItem[] grid = new GridItem[gridLength];
 
     for (int i = 0; i < grid.length; ++i) {
 
-        grid[i] = new GridItem('a', defaultItemColor);
+        grid[i] = new GridItem('a', defaultColor);
     }
 
     return grid;
@@ -140,9 +155,7 @@ void renderGrid(GridItem[] randomGrid) {
 }
 
 void draw() {
-    background(10);
-    frameRate(60);
-
+    background(defaultBackground);
 
     grid = randomizeGrid(grid);
     renderGrid(grid);
@@ -151,13 +164,14 @@ void draw() {
 void mouseMoved() {
     int gridPos = 0, newGridPos = 0, radiusGridPos = 0, edgeDetection = 0;
 
-
+    // makes sure that gridPos stays in grid range
     newGridPos = (mouseX / cellSize) + (mouseY / cellSize * cols) ;
 
     if (newGridPos < gridLength) {
         gridPos = newGridPos;
     }
 
+    // iterates through grid based on mouse position and hoverRadius
     for (int i = 0; i <= hoverRadius * 2; ++i) {
         for (int j = 0; j <= hoverRadius * 2; ++j) {
             radiusGridPos = (gridPos + i - hoverRadius) + ((j - hoverRadius) * cols);
