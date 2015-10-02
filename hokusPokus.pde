@@ -6,7 +6,7 @@
 
 import processing.pdf.*;
 
-int cols = 0, rows = 0, cellSize = 0, gridLength = 0;
+int cols = 0, rows = 0, cellSize = 0, gridLength = 0, hoverRadius = 0;
 color defaultItemColor;
 
 // char[] grid = new char[0];
@@ -39,13 +39,15 @@ class GridItem {
         this.itemColor = itemColor;
     }
 
+
     void randomizeChar() {
         itemChar = char(int(random(32, 127)));
     }
 
     void randomizeColor() {
-        itemColor = int(random(255));
+        itemColor = int(random(128, 256));
     }
+
 
     void brightenColor() {
         itemColor = 255;
@@ -55,7 +57,11 @@ class GridItem {
         if (itemColor - 5 >= defaultItemColor) {
             itemColor -= 5;
         }
+        else {
+            itemColor = defaultItemColor;
+        }
     }
+
 
     char getChar() {
         return itemChar;
@@ -64,6 +70,7 @@ class GridItem {
     color getColor() {
         return itemColor;
     }
+
 
     void setChar(char newChar) {
         itemChar = newChar;
@@ -81,7 +88,8 @@ GridItem[] gridInit() {
     rows = height / cellSize;
     gridLength = cols * rows;
 
-    defaultItemColor = 30;
+    hoverRadius = 3;
+    defaultItemColor = 10;
 
     char randomChar = 'a';
     GridItem[] grid = new GridItem[gridLength];
@@ -141,7 +149,7 @@ void draw() {
 }
 
 void mouseMoved() {
-    int gridPos = 0, newGridPos = 0;
+    int gridPos = 0, newGridPos = 0, radiusGridPos = 0;
 
 
     newGridPos = (mouseX / cellSize) + (mouseY / cellSize * cols) ;
@@ -150,7 +158,17 @@ void mouseMoved() {
         gridPos = newGridPos;
     }
 
-    grid[gridPos].brightenColor();
+    for (int i = 0; i <= hoverRadius * 2; ++i) {
+        for (int j = 0; j <= hoverRadius * 2; ++j) {
+            radiusGridPos = (gridPos + i - hoverRadius) + ((j - hoverRadius) * cols);
 
-    println(mouseX, mouseY, gridPos, gridLength);
+            if (radiusGridPos >= 0 && radiusGridPos < gridLength) {
+                grid[radiusGridPos].randomizeColor();
+            }
+
+            println(gridPos % cols - i / 2);
+        }
+    }
+
+    // println(mouseX, mouseY, gridPos, gridLength);
 }
