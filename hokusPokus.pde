@@ -88,7 +88,7 @@ GridItem[] gridInit() {
     rows = height / cellSize;
     gridLength = cols * rows;
 
-    hoverRadius = 3;
+    hoverRadius = 1;
     defaultItemColor = 10;
 
     char randomChar = 'a';
@@ -149,7 +149,7 @@ void draw() {
 }
 
 void mouseMoved() {
-    int gridPos = 0, newGridPos = 0, radiusGridPos = 0;
+    int gridPos = 0, newGridPos = 0, radiusGridPos = 0, edgeDetection = 0;
 
 
     newGridPos = (mouseX / cellSize) + (mouseY / cellSize * cols) ;
@@ -162,13 +162,15 @@ void mouseMoved() {
         for (int j = 0; j <= hoverRadius * 2; ++j) {
             radiusGridPos = (gridPos + i - hoverRadius) + ((j - hoverRadius) * cols);
 
-            if (radiusGridPos >= 0 && radiusGridPos < gridLength) {
+            edgeDetection = gridPos % cols + i - hoverRadius;
+
+            if (radiusGridPos >= 0 && radiusGridPos < gridLength && edgeDetection >= 0 && edgeDetection < cols) {
                 grid[radiusGridPos].randomizeColor();
             }
 
-            println(gridPos % cols - i / 2);
+            // println(gridPos % cols - i / 2);
         }
     }
 
-    // println(mouseX, mouseY, gridPos, gridLength);
+    println(mouseX, mouseY, gridPos, gridLength);
 }
