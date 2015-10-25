@@ -69,8 +69,8 @@ class GridItem {
     }
 
     void darkenColor() {
-        if (itemColorB + defaultColorB / 100 <= defaultColorB) {
-            itemColorB += defaultColorB / 100;
+        if (itemColorB + defaultColorB / 200 <= defaultColorB) {
+            itemColorB += defaultColorB / 200;
             itemColor = color(itemColorH, itemColorS, itemColorB);
         }
         else {
@@ -104,7 +104,7 @@ GridItem[] gridInit() {
     rows = height / cellSize;
     gridLength = cols * rows;
 
-    hoverRadius = 1;
+    hoverRadius = 2;
 
     char randomChar = 'a';
     GridItem[] grid = new GridItem[gridLength];
@@ -155,6 +155,7 @@ void renderGrid(GridItem[] randomGrid) {
 }
 
 void draw() {
+    frameRate(120);
     background(defaultBackground);
 
     grid = randomizeGrid(grid);
