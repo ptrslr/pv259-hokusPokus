@@ -17,19 +17,20 @@ GridItem[] grid;
 PFont font;
 
 void setup() {
-    size(1024, 640, P2D);
+    size(1280, 720, P2D);
 
     colorMode(HSB, 360, 100, 100);
 
-    defaultColorH = 137;
-    defaultColorS = 57;
-    defaultColorB = 68;
+    //defaultColor = #89CDE4;
+    defaultColor = #B6D8E4;
+    defaultColorH = hue(defaultColor);
+    defaultColorS = saturation(defaultColor);
+    defaultColorB = brightness(defaultColor);
 
-    defaultColor = color(defaultColorH, defaultColorS, defaultColorB);
-    defaultBackground = color(defaultColorH, defaultColorS, defaultColorB);
+    defaultBackground = defaultColor;
 
     fill(defaultColor);
-    font = createFont("Inconsolata", 16, true);
+    font = createFont("data/Inconsolata-dz.otf", 16, true);
     textAlign(LEFT, TOP);
     textFont(font);
 
@@ -60,7 +61,7 @@ class GridItem {
     }
 
     void randomizeColor() {
-        itemColorB = int(random(50));
+        itemColorB = int(random(80));
         itemColor = color(itemColorH, itemColorS, itemColorB);
     }
 
@@ -69,8 +70,8 @@ class GridItem {
     }
 
     void darkenColor() {
-        if (itemColorB + defaultColorB / 200 <= defaultColorB) {
-            itemColorB += defaultColorB / 200;
+        if (itemColorB + defaultColorB / 60 <= defaultColorB) {
+            itemColorB += defaultColorB / 60;
             itemColor = color(itemColorH, itemColorS, itemColorB);
         }
         else {
@@ -104,7 +105,7 @@ GridItem[] gridInit() {
     rows = height / cellSize;
     gridLength = cols * rows;
 
-    hoverRadius = 64;
+    hoverRadius = 32;
 
     char randomChar = 'a';
     GridItem[] grid = new GridItem[gridLength];
@@ -156,30 +157,32 @@ void renderGrid(GridItem[] randomGrid) {
 }
 
 void draw() {
-    frameRate(120);
+    frameRate(60);
     background(defaultBackground);
 
     grid = randomizeGrid(grid);
     renderGrid(grid);
+    saveFrame("frames/####.tif");
 }
 
 void mouseMoved() {
-    int gridPos = 0, newGridPos = 0, radiusGridPos = 0, edgeDetection = 0;
     int gridLength = rows * cols;
-    int posX, posY, x, y;
+    int posX, posY, x, y, mouseDif = 0;
     float distance = 0;
 
     for (int i = 0; i < gridLength; i++) {
         posX = grid[i].posX;
         posY = grid[i].posY;
 
+        //center
         x = posX + cellSize / 2;
         y = posY + cellSize / 2;
+        
         distance = sqrt(pow(x - mouseX, 2) + pow(y - mouseY, 2));
-        if (distance <= hoverRadius) {
+        mouseDif = int(sqrt(pow(mouseX - pmouseX, 2) + pow(mouseY - pmouseY, 2)));
+        
+        if (distance <= (hoverRadius + mouseDif)) {
             grid[i].randomizeColor();
         }
     }
-
-    println(mouseX, mouseY, gridPos, gridLength);
 }
